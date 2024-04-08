@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: hosting-services
+  namespace: argocd
+spec:
+  # Deny all cluster-scoped resources from being created, except for Namespace
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  # Project description
+  description: Common hosting services
+  # Only permit applications to deploy to the guestbook namespace in the same cluster
+  destinations:
+  - namespace: '*'
+    server: '*'
+  # Allow manifests to deploy from any Git repos
+  # sourceRepos:
+  # - 'https://git.spicter.io/spicter/kitchensink.git'
+---

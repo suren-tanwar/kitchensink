@@ -1,0 +1,16 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: guestbook-ui
+  namespace: default
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`andreas.127.0.0.1.nip.io`) || Host(`andreas.test`)
+      services:
+        - name: guestbook-ui
+          port: 80
+  tls:
+    certResolver: default

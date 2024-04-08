@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: apps-hosting
+  namespace: argocd
+spec:
+  generators:
+    # matrix 'parent' generator
+    - matrix:
+        generators:
+          # git generator, 'child' #1
+          - git:
+              repoURL: https://git.spicter.io/spicter/kitchensink.git
+              revision: HEAD
+              directories:
+                - path: argocd/hosting-services/*/*
+          # cluster generator, 'child' #2
+          - clusters: {}
+  template:
+    metadata:
+      name: '{{name}}-{{path.basenameNormalized}}'
+    spec:
+      project: hosting-services
+      source:
+        repoURL: https://git.spicter.io/spicter/kitchensink.git
+        targetRevision: HEAD
+        path: '{{path}}/{{name}}'
+      destination:
+        server: '{{server}}'
+        namespace: 'hosting-{{path[2]}}'
+      syncPolicy:
+        automated:
+          selfHeal: true # git is the single source of truth
